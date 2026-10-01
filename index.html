@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akshay Thakur</title>
+  <meta name="description" content="Akshay Thakur — PhD candidate at the University of Notre Dame working on scientific machine learning, physics-informed neural networks, and finite element / finite volume methods.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e16;
+      --text: #dde3ec;
+      --muted: #64748b;
+      --faint: #1e293b;
+      --cool: #94c5e0;          /* muted dusty blue */
+      --warm: #d4956a;          /* muted warm amber */
+      --rule: #1e293b;
+      --card: rgba(255, 255, 255, 0.018);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); }
+    html { scroll-behavior: smooth; }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(148, 197, 224, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148, 197, 224, 0.015) 1px, transparent 1px),
+        radial-gradient(900px 500px at 15% 10%, rgba(148, 197, 224, 0.045), transparent),
+        radial-gradient(700px 400px at 90% 95%, rgba(212, 149, 106, 0.03), transparent);
+      background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cool), transparent);
+      opacity: 0.3;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    body {
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      color: var(--text);
+      font-size: 14.5px;
+      line-height: 1.65;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 3.5rem 1.75rem 5rem;
+      font-weight: 400;
+    }
+
+    .header {
+      display: flex;
+      gap: 1.75rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 120px;
+      object-fit: cover;
+      object-position: center 20%;
+      border: 1px solid var(--cool);
+      flex-shrink: 0;
+      filter: contrast(1.05) saturate(0.9);
+      clip-path: polygon(8% 0, 100% 0, 100% 92%, 92% 100%, 0 100%, 0 8%);
+    }
+
+    .header-text { flex: 1; min-width: 240px; }
+
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.005em;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    h1 .code-glyph {
+      color: var(--cool);
+      font-weight: 400;
+      opacity: 0.7;
+      font-size: 1.4rem;
+    }
+    h1 .name { color: var(--warm); }
+
+    .affil {
+      color: #a8b0bf;
+      font-size: 0.82rem;
+      margin-top: 0.4rem;
+      letter-spacing: 0.01em;
+    }
+    .affil .sep {
+      color: var(--warm);
+      margin: 0 0.5rem;
+    }
+
+    nav {
+      margin: 1.5rem 0 0.25rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+      line-height: 2;
+    }
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      padding: 0.15rem 0;
+      border-bottom: 1px solid var(--faint);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    nav a:hover { color: var(--cool); border-bottom-color: var(--cool); }
+    nav .dot {
+      color: var(--faint);
+      margin: 0 0.6rem;
+    }
+    nav .ext { color: var(--warm); font-size: 0.7rem; margin-left: 0.1rem; opacity: 0.85; }
+
+    .hairline {
+      height: 1px;
+      background: linear-gradient(90deg, var(--cool) 0%, var(--faint) 50%, var(--warm) 100%);
+      opacity: 0.3;
+      margin: 1.75rem 0 2.25rem;
+      border: none;
+    }
+
+    section { margin-bottom: 3rem; scroll-margin-top: 1.5rem; }
+
+    h2 {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--cool);
+      margin-bottom: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    h2::before {
+      content: "▌";
+      color: var(--warm);
+      font-size: 1rem;
+      opacity: 0.9;
+    }
+    h2 .num {
+      color: var(--muted);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      margin-left: auto;
+      font-size: 0.7rem;
+    }
+
+    h3 {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 1.75rem 0 0.25rem;
+    }
+    h3:first-of-type { margin-top: 0.5rem; }
+
+    p { margin-bottom: 1rem; color: var(--text); }
+    p .hl { color: var(--warm); font-weight: 500; }
+
+    a {
+      color: var(--cool);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(148, 197, 224, 0.3);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    a:hover {
+      color: var(--warm);
+      border-bottom-color: var(--warm);
+    }
+
+    /* ─── interests chips ─── */
+    .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem; }
+    .chip {
+      font-size: 0.7rem;
+      color: #a8b0bf;
+      border: 1px solid var(--rule);
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+      letter-spacing: 0.02em;
+    }
+
+    /* ─── news ─── */
+    .news { list-style: none; }
+    .news li {
+      display: grid;
+      grid-template-columns: 6.5rem 1fr;
+      gap: 1rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 0.83rem;
+    }
+    .news li:last-child { border-bottom: none; }
+    .news .when { color: var(--warm); font-size: 0.75rem; padding-top: 0.1rem; }
+
+    /* ─── experience timeline ─── */
+    .timeline { list-style: none; position: relative; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 0.3rem; top: 0.5rem; bottom: 0.5rem;
+      width: 1px;
+      background: linear-gradient(180deg, var(--cool), var(--faint) 70%, transparent);
+      opacity: 0.5;
+    }
+    .timeline li { position: relative; padding: 0 0 1.4rem 1.75rem; }
+    .timeline li::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0.45rem;
+      width: 0.6rem; height: 0.6rem;
+      background: var(--bg);
+      border: 1px solid var(--cool);
+      transform: rotate(45deg);
+    }
+    .timeline li.now::before { background: var(--warm); border-color: var(--warm); }
+    .role-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+    .role { font-weight: 600; font-size: 0.9rem; }
+    .org { color: var(--cool); font-size: 0.8rem; }
+    .dates { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.04em; white-space: nowrap; }
+    .role-desc { color: #cbd2dd; font-size: 0.8rem; margin-top: 0.3rem; }
+
+    /* ─── projects ─── */
+    .projects { display: grid; gap: 1.25rem; }
+    .project {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1.25rem;
+      padding: 1.1rem;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      border-left: 2px solid var(--cool);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .project.no-fig { grid-template-columns: 1fr; }
+    .project:hover { border-left-color: var(--warm); background: rgba(255, 255, 255, 0.03); }
+    .project figure {
+      background: #f4f6f9;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      align-self: start;
+    }
+    .project figure img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      cursor: zoom-in;
+    }
+    .project .p-meta {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .project .p-meta .lab { color: var(--warm); }
+    .project .p-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 0.45rem;
+    }
+    .project .p-body { font-size: 0.8rem; color: #cbd2dd; line-height: 1.6; }
+    .project .p-body ul { margin: 0.45rem 0 0 1rem; }
+    .project .p-body li { margin-bottom: 0.15rem; }
+    .project .p-foot {
+      margin-top: 0.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .project .p-foot a {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.45rem;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+    }
+    .project .p-foot a:hover { border-color: var(--warm); }
+
+    .other-work {
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: #a8b0bf;
+    }
+    .other-work li { list-style: none; padding: 0.3rem 0 0.3rem 1.4rem; position: relative; }
+    .other-work li::before {
+      content: "◇";
+      position: absolute; left: 0; top: 0.3rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+    .other-work .pubref { color: var(--warm); font-size: 0.72rem; }
+
+    /* ─── lightbox ─── */
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(5, 8, 13, 0.92);
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 2rem;
+      z-index: 10;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 90vh; background: #f4f6f9; padding: 0.5rem; }
+
+    /* ─── publications: numbered citation entries ─── */
+    .pub {
+      display: grid;
+      grid-template-columns: 2.5rem 1fr;
+      gap: 1rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .pub-num {
+      color: var(--warm);
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding-top: 0.2rem;
+      letter-spacing: 0.05em;
+    }
+    .pub-num::before { content: "["; color: var(--muted); }
+    .pub-num::after  { content: "]"; color: var(--muted); }
+    .pub-authors {
+      color: var(--text);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin-top: 0.2rem;
+    }
+    .pub-authors .me {
+      color: var(--warm);
+      font-weight: 500;
+    }
+    .pub-title {
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin: 0;
+    }
+    .pub-venue {
+      color: var(--cool);
+      font-size: 0.8rem;
+      font-style: italic;
+    }
+    .pub-venue .year { color: var(--muted); font-style: normal; }
+    .badge {
+      display: inline-block;
+      font-size: 0.62rem;
+      font-style: normal;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--warm);
+      border: 1px solid rgba(212, 149, 106, 0.45);
+      padding: 0 0.35rem;
+      margin-left: 0.4rem;
+      border-radius: 2px;
+      vertical-align: 1px;
+    }
+    .pub-abstract {
+      margin-top: 0.4rem;
+      font-size: 0.76rem;
+      line-height: 1.55;
+      color: #a8b0bf;
+    }
+    .pub-links {
+      margin-top: 0.5rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+    .pub-links a {
+      color: var(--cool);
+      text-decoration: none;
+      padding: 0.15rem 0.45rem;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .pub-links a:hover {
+      color: var(--warm);
+      border-color: var(--warm);
+      background: rgba(212, 149, 106, 0.05);
+    }
+    .pub-links .bib-toggle {
+      cursor: pointer;
+      color: var(--muted);
+      background: none;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.15rem 0.45rem;
+      font-family: inherit;
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .pub-links .bib-toggle:hover {
+      color: var(--warm);
+      border-color: var(--warm);
+    }
+    .pub .bib {
+      display: none;
+      margin-top: 0.6rem;
+      padding: 0.85rem 1rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 2px solid var(--cool);
+      font-size: 0.72rem;
+      line-height: 1.55;
+      color: var(--text);
+      white-space: pre;
+      overflow-x: auto;
+      letter-spacing: 0.01em;
+    }
+    .pub .bib.open { display: block; }
+    .pub .bib .field { color: var(--cool); }
+
+    .pub-footer {
+      margin-top: 1rem;
+      padding-top: 0.5rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.01em;
+    }
+    .pub-footer a {
+      color: var(--cool);
+      border-bottom: 1px dashed rgba(148, 197, 224, 0.4);
+      padding-bottom: 1px;
+    }
+
+    /* ─── teaching / awards ─── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .box {
+      padding: 1rem 1.1rem;
+      background: var(--card);
+      border: 1px solid var(--rule);
+      font-size: 0.8rem;
+    }
+    .box .k { color: var(--muted); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .box ul { list-style: none; }
+    .box li { padding: 0.25rem 0; color: #cbd2dd; }
+    .box li b { color: var(--text); font-weight: 600; }
+    .box .award { color: var(--warm); font-weight: 600; }
+
+    .skills { display: grid; grid-template-columns: 9rem 1fr; gap: 0.4rem 1rem; font-size: 0.8rem; }
+    .skills dt { color: var(--muted); }
+    .skills dd { color: #cbd2dd; }
+
+    footer {
+      margin-top: 3.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    @media (max-width: 680px) {
+      .project { grid-template-columns: 1fr; }
+      .project figure { aspect-ratio: 16 / 9; }
+      .two-col { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 2.5rem 1rem 4rem; }
+      h1 { font-size: 1.35rem; }
+      h1 .code-glyph { font-size: 1.2rem; }
+      .avatar { width: 78px; height: 98px; }
+      nav { font-size: 0.78rem; }
+      nav .dot { margin: 0 0.4rem; }
+      .news li { grid-template-columns: 1fr; gap: 0.1rem; }
+      .skills { grid-template-columns: 1fr; }
+      .skills dd { margin-bottom: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <img class="avatar" src="assets/profile.jpg" alt="Portrait of Akshay Thakur"
+         onerror="this.style.background='linear-gradient(135deg, #1e293b, #0a0e16)';this.alt='';this.removeAttribute('src');">
+    <div class="header-text">
+      <h1>
+        <span class="code-glyph">&lt;/&gt;</span>
+        Akshay <span class="name">Thakur</span>
+      </h1>
+      <div class="affil">PhD Candidate <span class="sep">//</span> Aerospace &amp; Mechanical Engineering <span class="sep">//</span> University of Notre Dame</div>
+
+      <nav>
+        <a href="#about">about</a><span class="dot">·</span>
+        <a href="#experience">experience</a><span class="dot">·</span>
+        <a href="#projects">projects</a><span class="dot">·</span>
+        <a href="#publications">publications</a><span class="dot">·</span>
+        <a href="#teaching">teaching</a><span class="dot">·</span>
+        <a href="CurriculumVitae.pdf" target="_blank" rel="noopener">cv<span class="ext">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <hr class="hairline">
+
+  <!-- ───────────────────────── about ───────────────────────── -->
+  <section id="about">
+    <h2>about <span class="num">00</span></h2>
+    <p>I'm a PhD candidate in the <a href="https://ame.nd.edu/">Department of Aerospace and Mechanical Engineering</a> at the University of Notre Dame, advised by <a href="https://zahr.nd.edu/">Prof. Matthew J. Zahr</a> in the <span class="hl">CAMO Lab</span>. My research sits at the intersection of <span class="hl">scientific machine learning</span>, finite element / finite volume methods, and model order reduction. I build numerical methods that combine classical scientific computing with deep learning to solve PDEs more efficiently and reliably.</p>
+    <p>Right now I'm working on <span class="hl">feature-tracking physics-informed neural networks</span> for boundary layers and shocks, and on <span class="hl">optimization-based nonlinear discontinuous Galerkin</span> methods that resolve thin layers on coarse meshes. I also contribute to an in-house finite element package written in Julia. I've interned at <a href="https://www.synopsys.com/">Synopsys</a>, building foundation models for external aerodynamics, and at <a href="https://www.merl.com/">Mitsubishi Electric Research Labs</a>, building neural-operator and GNN surrogates for sound propagation. Before Notre Dame, I worked at the <a href="https://www.csccm.in/">CSCCM Lab</a> at IIT Delhi on neural operators and generative surrogates for stochastic PDEs.</p>
+    <p>Reach me at <a href="mailto:athakur3@nd.edu">athakur3@nd.edu</a>. You can also find me on <a href="https://scholar.google.com/citations?user=QaZclkIAAAAJ&amp;hl=en">Google Scholar</a>, <a href="https://github.com/akshay-thkur">GitHub</a>, and <a href="https://www.linkedin.com/in/akshay-thakur-325157148">LinkedIn</a>.</p>
+    <div class="chips">
+      <span class="chip">scientific ML</span>
+      <span class="chip">physics-informed neural networks</span>
+      <span class="chip">neural operators</span>
+      <span class="chip">discontinuous Galerkin</span>
+      <span class="chip">finite volume methods</span>
+      <span class="chip">uncertainty quantification</span>
+      <span class="chip">model order reduction</span>
+      <span class="chip">hyperbolic PDEs</span>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── news ───────────────────────── -->
+  <section id="news">
+    <h2>recent <span class="num">01</span></h2>
+    <ul class="news">
+      <li><span class="when">Sep 2026</span><span>Invited talk on <a href="#pub-11">FT-PINN for resolving localized features</a> at the <em>JHU–IITD SMaRT Seminar Series</em>.</span></li>
+      <li><span class="when">2026</span><span>Paper on <a href="https://doi.org/10.1016/j.cpc.2026.110419">FT-PINN for boundary layers</a> published in <em>Computer Physics Communications</em>.</span></li>
+      <li><span class="when">Jun 2026</span><span>Started a research internship at <span class="hl" style="color:var(--warm)">Synopsys</span> on foundation models for external aerodynamics.</span></li>
+      <li><span class="when">2025</span><span><a href="https://arxiv.org/abs/2508.09623">Scalable h-adaptive probabilistic solver</a> accepted in <em>CMAME</em>.</span></li>
+      <li><span class="when">Sep 2025</span><span>Joined <span style="color:var(--warm)">MERL</span> (Cambridge, MA) as a research intern working on surrogates for sound propagation.</span></li>
+      <li><span class="when">Jul 2024</span><span>Presented ML surrogates for Riemann solvers at <em>WCCM-PANACM 2024</em>, Vancouver.</span></li>
+    </ul>
+  </section>
+
+  <!-- ───────────────────────── experience ───────────────────────── -->
+  <section id="experience">
+    <h2>experience <span class="num">02</span></h2>
+    <ul class="timeline">
+      <li class="now">
+        <div class="role-head"><span class="role">Research Intern <span class="org">· Synopsys Inc.</span></span><span class="dates">Jun 2026 – Oct 2026</span></div>
+        <div class="role-desc">Foundation models for external aerodynamics: benchmarking existing models, developing new ones, quantifying uncertainty in their predictions, and designing data-acquisition and training strategies for large-scale aerodynamic datasets.</div>
+      </li>
+      <li>
+        <div class="role-head"><span class="role">Research Intern <span class="org">· Mitsubishi Electric Research Labs, Cambridge MA</span></span><span class="dates">Sep 2025 – Feb 2026</span></div>
+        <div class="role-desc">Physics-grounded, scalable surrogate models for sound propagation, built on attention-based neural operators and graph neural networks.</div>
+      </li>
+      <li class="now">
+        <div class="role-head"><span class="role">Graduate Research Assistant <span class="org">· CAMO Lab, Notre Dame</span></span><span class="dates">Aug 2023 – present</span></div>
+        <div class="role-desc">PINN methods for boundary layers and shocks, nonlinear DG methods, and neural-network surrogates for Riemann solvers. Contributor to an in-house Julia finite element package; wrote an unstructured finite volume code in PyTorch.</div>
+      </li>
+      <li>
+        <div class="role-head"><span class="role">Graduate Research Assistant <span class="org">· COMSAIL Lab, Notre Dame</span></span><span class="dates">Aug 2022 – Aug 2023</span></div>
+        <div class="role-desc">Uncertainty quantification for Fourier neural operator surrogates and their extended variants (M.S. thesis).</div>
+      </li>
+      <li>
+        <div class="role-head"><span class="role">Research Intern <span class="org">· CSCCM Lab, IIT Delhi</span></span><span class="dates">Jul 2021 – Aug 2022</span></div>
+        <div class="role-desc">Multi-fidelity wavelet neural operators for reliability analysis, generative-moment-matching surrogates for stochastic simulators, and capsule-network surrogates for PDEs.</div>
+      </li>
+    </ul>
+    <h3>education</h3>
+    <ul class="timeline" style="margin-top:0.75rem">
+      <li class="now">
+        <div class="role-head"><span class="role">Ph.D., Aerospace &amp; Mechanical Engineering <span class="org">· University of Notre Dame</span></span><span class="dates">Aug 2022 – present</span></div>
+      </li>
+      <li>
+        <div class="role-head"><span class="role">M.S., Mechanical Engineering <span class="org">· University of Notre Dame</span></span><span class="dates">Aug 2022 – Aug 2023</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ───────────────────────── projects ───────────────────────── -->
+  <section id="projects">
+    <h2>research projects <span class="num">03</span></h2>
+    <div class="projects">
+
+      <article class="project">
+        <figure><img src="assets/ftpinn.png" alt="Collocation points clustered along merging shocks by a learned coordinate map" loading="lazy"></figure>
+        <div>
+          <div class="p-meta"><span class="lab">CAMO Lab</span> · 2024 – present</div>
+          <div class="p-title">FT-PINN: feature tracking in physics-informed neural networks</div>
+          <div class="p-body">
+            PINNs struggle with localized features such as thin boundary layers and shocks: the loss is dominated by the smooth bulk, so steep gradients are under-resolved. FT-PINN puts the network on a fixed reference domain and composes it with a <b>trainable coordinate map</b>, optimized jointly with the network weights. Collocation points then concentrate where the solution is steep, with no resampling and no prior knowledge of where the feature is.
+            <ul>
+              <li><b>Part I:</b> analytical tensor-product manifolds for boundary layers (advection–diffusion at Pe = 10³, flat plate at Re = 10⁶).</li>
+              <li><b>Part II:</b> RBF deformation manifolds for shocks (Burgers merging and decelerating shocks, Sod shock tube, Euler regular reflection).</li>
+            </ul>
+          </div>
+          <div class="p-foot">
+            <a href="https://doi.org/10.1016/j.cpc.2026.110419">paper · boundary layers</a>
+            <a href="#pub-8">preprint · shocks (submitted)</a>
+            <a href="#pub-11">SMaRT seminar 2026</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="project no-fig">
+        <div>
+          <div class="p-meta"><span class="lab">CAMO Lab</span> · ongoing</div>
+          <div class="p-title">Optimization-based nonlinear discontinuous Galerkin (NLDG) for high-Péclet flows</div>
+          <div class="p-body">
+            The usual way to resolve thin viscous layers is with highly stretched, anisotropic meshes, which are tedious and fragile to generate. NLDG takes the opposite approach. It keeps <b>coarse, isotropic meshes</b> and enriches the DG approximation space with a nonlinear manifold of trial functions. The nonlinear parameters and the solution coefficients are solved for together through residual minimization, so no a priori knowledge of the layer scale is needed.
+          </div>
+          <div class="p-foot"><a href="#pub-9">in preparation</a></div>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure><img src="assets/godunov.png" alt="Shallow water height field and error using the bi-fidelity neural flux" loading="lazy"></figure>
+        <div>
+          <div class="p-meta"><span class="lab">CAMO Lab</span> · 2023 – 2025</div>
+          <div class="p-title">Neural Godunov corrections for approximate Riemann solvers</div>
+          <div class="p-body">
+            In finite volume schemes, the exact Godunov flux is accurate but expensive, while approximate Riemann solvers such as Roe are cheap but diffusive near shocks. A <b>bi-fidelity neural network</b> learns the residual between the Godunov and Roe fluxes, which gives a cheap correction with near-Godunov accuracy. It was tested a posteriori inside an unstructured PyTorch FV solver on Burgers' equation and the 2-D shallow water equations.
+          </div>
+          <div class="p-foot"><a href="#pub-3">CAMCoS 2025</a><a href="#pub-12">WCCM 2024 talk</a></div>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure><img src="assets/gpps.png" alt="Predicted mean, standard deviation and error over h-adaptive iterations" loading="lazy"></figure>
+        <div>
+          <div class="p-meta"><span class="lab">Notre Dame × IIT Delhi</span> · 2024 – 2025</div>
+          <div class="p-title">Scalable h-adaptive probabilistic PDE solver</div>
+          <div class="p-body">
+            A Gaussian-process-based probabilistic solver that conditions a GP prior on the PDE and boundary conditions, so it <b>quantifies epistemic discretization uncertainty</b>. Solving for the posterior normally costs O(N³); stochastic dual descent (a dual reformulation with randomized coordinate gradients and Nesterov momentum) avoids that. A clustering-based active-learning loop adds collocation points where the posterior variance is highest. The method handles both time-independent and time-dependent systems.
+          </div>
+          <div class="p-foot"><a href="https://arxiv.org/abs/2508.09623">arXiv:2508.09623</a><a href="#pub-2">CMAME (accepted)</a></div>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure><img src="assets/mfwno.png" alt="Multi-fidelity wavelet neural operator architecture" loading="lazy"></figure>
+        <div>
+          <div class="p-meta"><span class="lab">CSCCM Lab, IIT Delhi</span> · 2021 – 2024</div>
+          <div class="p-title">Multi-fidelity wavelet neural operators for reliability analysis</div>
+          <div class="p-body">
+            A low-fidelity WNO learns the coarse solution operator, and a high-fidelity WNO learns the residual correction from a small set of expensive simulations. The resulting surrogate is used for <b>time-independent and time-dependent reliability analysis</b>, including failure probability and first-passage time, on Darcy flow in a notched triangular domain and on the unsteady Allen–Cahn equation.
+          </div>
+          <div class="p-foot"><a href="#pub-5">Prob. Eng. Mech. 2024</a></div>
+        </div>
+      </article>
+
+      <article class="project">
+        <figure><img src="assets/rpfno.png" alt="Randomized prior Fourier neural operator architecture" loading="lazy"></figure>
+        <div>
+          <div class="p-meta"><span class="lab">COMSAIL Lab</span> · 2022 – 2023</div>
+          <div class="p-title">Randomized-prior Fourier neural operators for uncertainty-aware rollout</div>
+          <div class="p-body">
+            Deep ensembles tend to give overconfident uncertainty estimates. This project extends <b>randomized prior networks</b> to the Fourier neural operator: each ensemble member pairs a trainable FNO with a fixed, randomly initialized prior FNO. The result is efficient, parallelizable UQ for spatiotemporal rollouts of time-dependent PDEs such as the 2-D Allen–Cahn equation.
+          </div>
+          <div class="p-foot"><a href="https://doi.org/10.7274/xp68kd2150r">M.S. thesis</a></div>
+        </div>
+      </article>
+
+    </div>
+
+    <ul class="other-work">
+      <li><b>Industry:</b> foundation models for external aerodynamics (Synopsys) and attention / GNN surrogates for sound propagation (MERL).</li>
+      <li><b>Earlier work on stochastic surrogates:</b> MD-NOMAD, a mixture-density decoder for stochastic simulators <span class="pubref">[4]</span>; capsule encoder–decoder networks <span class="pubref">[6]</span>; and generative-moment-matching surrogates <span class="pubref">[7]</span>.</li>
+    </ul>
+  </section>
+
+  <!-- ───────────────────────── publications ───────────────────────── -->
+  <section id="publications">
+    <h2>publications <span class="num">04</span></h2>
+    <div id="pub-list">
+      <noscript><p>See the <a href="CurriculumVitae.pdf">CV</a> for the full publication list.</p></noscript>
+    </div>
+    <div class="pub-footer">
+      <a href="https://scholar.google.com/citations?user=QaZclkIAAAAJ&amp;hl=en" target="_blank" rel="noopener">→ full list on Google Scholar</a>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── teaching ───────────────────────── -->
+  <section id="teaching">
+    <h2>teaching <span class="num">05</span></h2>
+    <div class="box">
+      <div class="k">University of Notre Dame</div>
+      <ul>
+        <li><b>Co-Instructor &amp; Co-Curriculum Developer</b> (Fall 2024)<br>AME 30251: Computing, Numerical Methods &amp; Data Science in Engineering</li>      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <span>last updated · 2026.10.01</span>
+    <span>akshay-thkur.github.io</span>
+  </footer>
+
+  <div class="lightbox" id="lightbox"><img alt=""></div>
+
+  <script>
+    // ── publication data (edit here) ──
+    const ME = 'A. Thakur';
+    const PUBS = [
+      { group: 'Journal articles' },
+      { id: 1, key: 'thakur2026blpinn', type: 'article',
+        title: 'Feature tracking in physics-informed neural networks via joint optimization of analytical nonlinear manifolds: Application to boundary layers',
+        authors: ['A. Thakur', 'M. J. Zahr'], venue: 'Computer Physics Communications', detail: 'Vol. 330, 110419', year: 2027,
+        links: { DOI: 'https://doi.org/10.1016/j.cpc.2026.110419' }, doi: '10.1016/j.cpc.2026.110419' },
+      { id: 2, key: 'thakur2025scalable', type: 'article',
+        title: 'Scalable h-adaptive probabilistic solver for time-independent and time-dependent systems',
+        authors: ['A. Thakur', 'S. Kumar', 'M. J. Zahr', 'S. Chakraborty'], venue: 'Computer Methods in Applied Mechanics and Engineering', year: 2025, badge: 'accepted',
+        links: { arXiv: 'https://arxiv.org/abs/2508.09623' }, note: 'Accepted. arXiv:2508.09623' },
+      { id: 3, key: 'thakur2025neural', type: 'article',
+        title: 'Neural network-based Godunov corrections for approximate Riemann solvers using bi-fidelity learning',
+        authors: ['A. Thakur', 'M. J. Zahr'], venue: 'Communications in Applied Mathematics and Computational Science', detail: 'Vol. 20, No. 1, pp. 207–229', year: 2025,
+        volume: 20, number: 1, pages: '207--229' },
+      { id: 4, key: 'thakur2024mdnomad', type: 'article',
+        title: 'MD-NOMAD: Mixture density nonlinear manifold decoder for emulating stochastic simulators and one-shot uncertainty propagation',
+        authors: ['A. Thakur', 'S. Chakraborty'], venue: 'Journal of Engineering Mechanics', year: 2024,
+        links: { DOI: 'https://doi.org/10.1061/JENMDT/EMENG-8613' }, doi: '10.1061/JENMDT/EMENG-8613' },
+      { id: 5, key: 'tripura2024multifidelity', type: 'article',
+        title: 'Multi-fidelity wavelet neural operator surrogate model for time-independent and time-dependent reliability analysis',
+        authors: ['T. Tripura', 'A. Thakur', 'S. Chakraborty'], venue: 'Probabilistic Engineering Mechanics', detail: 'Vol. 77, 103672', year: 2024,
+        volume: 77, pages: '103672' },
+      { id: 6, key: 'thakur2023capsule', type: 'article',
+        title: 'Deep capsule encoder–decoder network for surrogate modeling and uncertainty quantification',
+        authors: ['A. Thakur', 'S. Chakraborty'], venue: 'International Journal for Numerical Methods in Engineering', detail: 'Vol. 124, No. 12, pp. 2783–2800', year: 2023,
+        volume: 124, number: 12, pages: '2783--2800' },
+      { id: 7, key: 'thakur2022deep', type: 'article',
+        title: 'A deep learning based surrogate model for stochastic simulators',
+        authors: ['A. Thakur', 'S. Chakraborty'], venue: 'Probabilistic Engineering Mechanics', detail: 'Vol. 68, 103248', year: 2022,
+        volume: 68, pages: '103248' },
+
+      { group: 'Submitted & in preparation' },
+      { id: 8, key: 'thakur2026shkpinn', type: 'article',
+        title: 'Feature tracking in physics-informed neural networks via joint optimization of nonlinear deformation manifolds: Application to shocks',
+        authors: ['A. Thakur', 'M. J. Zahr'], venue: 'Computer Methods in Applied Mechanics and Engineering', badge: 'submitted' },
+      { id: 9, key: 'thakur_nldg', type: 'unpublished',
+        title: 'Optimization-based nonlinear discontinuous Galerkin method for advection–diffusion problems with high Péclet number',
+        authors: ['A. Thakur', 'M. J. Zahr'], venue: '', badge: 'in preparation' },
+
+      { group: "Master's thesis" },
+      { id: 10, key: 'thakur2023uq', type: 'mastersthesis',
+        title: 'Uncertainty Quantification for Signal-to-Signal Regression-Based Neural Operator Frameworks',
+        authors: ['A. Thakur'], venue: 'M.S. Thesis, University of Notre Dame', school: 'University of Notre Dame', year: 2023,
+        links: { DOI: 'https://doi.org/10.7274/xp68kd2150r' }, doi: '10.7274/xp68kd2150r' },
+
+      { group: 'Talks, conference proceedings & presentations' },
+      { id: 11, key: 'thakur2026smart', type: 'misc',
+        title: 'Feature tracking in physics-informed neural networks for resolving localized features',
+        authors: ['A. Thakur'], venue: 'JHU–IITD SMaRT Seminar Series (Scientific Machine Learning Research Talks), online', detail: 'Sep 23, 10:00 AM EDT', year: 2026, badge: 'invited talk' },
+      { id: 12, key: 'thakur2024wccm', type: 'inproceedings',
+        title: 'Exploring Riemann solvers and machine learning surrogates in hyperbolic PDE systems: A neural network-based approach',
+        authors: ['A. Thakur', 'M. J. Zahr'], venue: '16th World Congress on Computational Mechanics & 4th PANACM, Vancouver', year: 2024 },
+      { id: 13, key: 'thakur2021bubbles', type: 'inproceedings',
+        title: 'Collision of steam bubbles in a vertical rectangular channel containing subcooled liquid',
+        authors: ['A. Thakur', 'P. Kumar'], venue: '26th National & 4th International ISHMT-ASTFE Heat and Mass Transfer Conference, IIT Madras', year: 2021 },
+    ];
+
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const bibName = a => { const p = a.split(' '); return `${p.pop()}, ${p.join(' ')}`; };
+
+    function bibtex(p) {
+      const venueField = { article: 'journal', inproceedings: 'booktitle', mastersthesis: 'school', unpublished: 'note', misc: 'howpublished' }[p.type];
+      const fields = [
+        ['author', p.authors.map(bibName).join(' and ')],
+        ['title', p.title],
+        [venueField, p.school || p.venue || 'In preparation'],
+        ['volume', p.volume], ['number', p.number], ['pages', p.pages],
+        ['year', p.year], ['doi', p.doi], ['note', p.note || (p.badge && !p.year ? p.badge[0].toUpperCase() + p.badge.slice(1) : undefined)],
+      ].filter(([, v]) => v !== undefined && v !== '');
+      const w = Math.max(...fields.map(([k]) => k.length));
+      return `@${p.type}{${p.key},\n` +
+        fields.map(([k, v]) => `  <span class="field">${k.padEnd(w)}</span> = {${esc(v)}},`).join('\n') + '\n}';
+    }
+
+    const list = document.getElementById('pub-list');
+    list.innerHTML = PUBS.map(p => {
+      if (p.group) return `<h3>${esc(p.group)}</h3>`;
+      const authors = p.authors.map(a => a === ME ? `<span class="me">${a}</span>` : esc(a)).join(', ');
+      const meta = [p.detail, p.year].filter(Boolean).join(' · ');
+      const links = Object.entries(p.links || {}).map(([k, u]) => `<a href="${u}" target="_blank" rel="noopener">${k}</a>`).join('');
+      return `<div class="pub" id="pub-${p.id}">
+        <div class="pub-num">${String(p.id).padStart(2, '0')}</div>
+        <div>
+          <div class="pub-title">${esc(p.title)}</div>
+          <div class="pub-authors">${authors}</div>
+          <div class="pub-venue">${esc(p.venue)}${meta ? ` <span class="year">· ${esc(meta)}</span>` : ''}${p.badge ? `<span class="badge">${p.badge}</span>` : ''}</div>
+          ${p.abstract ? `<div class="pub-abstract">${esc(p.abstract)}</div>` : ''}
+          <div class="pub-links">${links}<button class="bib-toggle" type="button">BibTeX</button></div>
+          <pre class="bib">${bibtex(p)}</pre>
+        </div>
+      </div>`;
+    }).join('');
+
+    list.addEventListener('click', e => {
+      if (e.target.classList.contains('bib-toggle'))
+        e.target.closest('.pub').querySelector('.bib').classList.toggle('open');
+    });
+
+    // ── figure lightbox ──
+    const lb = document.getElementById('lightbox');
+    document.querySelectorAll('.project figure img').forEach(img =>
+      img.addEventListener('click', () => { lb.querySelector('img').src = img.src; lb.querySelector('img').alt = img.alt; lb.classList.add('open'); }));
+    lb.addEventListener('click', () => lb.classList.remove('open'));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
+  </script>
+</body>
+</html>
